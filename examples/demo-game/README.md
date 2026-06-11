@@ -54,14 +54,25 @@ a second instead of waiting for the background flush.
 
 ## Full demo flow
 
-### 1. Start the API
+### Option A — use the deployed platform (easiest)
+
+The API and dashboard are already running at:
+
+- **Dashboard:** https://gamepulse-dashboard.onrender.com
+- **API:** https://gamepulse-api.onrender.com
+
+Skip to step 3.
+
+### Option B — run locally
+
+#### 1. Start the API
 
 ```bash
 make api
 # or: uv run uvicorn app.main:app --reload --app-dir services/api --port 8000
 ```
 
-### 2. Start the dashboard
+#### 2. Start the dashboard
 
 ```bash
 make dashboard
@@ -69,6 +80,8 @@ make dashboard
 ```
 
 Open <http://localhost:8501>.
+
+---
 
 ### 3. Create a project and copy its API key
 
@@ -83,10 +96,20 @@ Copy the template and fill in your key + slug:
 cp examples/demo-game/.env.example .env       # in the repo root
 ```
 
+**Deployed (default):**
+```ini
+GAMEPULSE_API_URL=https://gamepulse-api.onrender.com
+GAMEPULSE_API_KEY=gpk_your_key_here
+GAMEPULSE_PROJECT_SLUG=your-project-slug
+GAMEPULSE_DASHBOARD_URL=https://gamepulse-dashboard.onrender.com
+```
+
+**Local development:**
 ```ini
 GAMEPULSE_API_URL=http://localhost:8000
 GAMEPULSE_API_KEY=gpk_your_key_here
 GAMEPULSE_PROJECT_SLUG=your-project-slug
+GAMEPULSE_DASHBOARD_URL=http://localhost:8501
 ```
 
 (You can also `export` these as environment variables instead of using a file.)

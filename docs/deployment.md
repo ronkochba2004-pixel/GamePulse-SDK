@@ -67,11 +67,10 @@ The dashboard needs the API's public URL, which Render only assigns after the fi
 successful build. The two-step process:
 
 1. Wait for `gamepulse-api` to show **Live** in the Render dashboard
-2. Copy its URL — it looks like `https://gamepulse-api.onrender.com`
-   (Render may append a random suffix: `https://gamepulse-api-xxxx.onrender.com`)
+2. The API is deployed at: `https://gamepulse-api.onrender.com`
 3. In Render: `gamepulse-dashboard` → **Environment** → set:
    ```
-   GAMEPULSE_DASHBOARD_API_URL = https://gamepulse-api-xxxx.onrender.com
+   GAMEPULSE_DASHBOARD_API_URL = https://gamepulse-api.onrender.com
    ```
 4. Click **Save Changes** — Render automatically triggers a redeploy of the dashboard
 
@@ -82,7 +81,7 @@ the dashboard domain:
 
 In Render: `gamepulse-api` → **Environment** → update:
 ```
-GAMEPULSE_API_CORS_ORIGINS = https://gamepulse-dashboard-xxxx.onrender.com
+GAMEPULSE_API_CORS_ORIGINS = https://gamepulse-dashboard.onrender.com
 ```
 
 Save → Render redeploys the API automatically.
@@ -93,8 +92,8 @@ Render free services spin down after 15 minutes of inactivity. The first request
 a quiet period takes ~30 seconds to wake the container.
 
 Set up **UptimeRobot** (free) to ping both health endpoints every 14 minutes:
-- `https://gamepulse-api-xxxx.onrender.com/healthz`
-- `https://gamepulse-dashboard-xxxx.onrender.com/_stcore/health`
+- `https://gamepulse-api.onrender.com/healthz`
+- `https://gamepulse-dashboard.onrender.com/_stcore/health`
 
 This keeps both services warm at zero cost.
 
@@ -135,7 +134,7 @@ Options:
 
 | Variable | Required | Default | Notes |
 |---|---|---|---|
-| `GAMEPULSE_DASHBOARD_API_URL` | **Yes** | `http://localhost:8000` | Full `https://` URL of the API |
+| `GAMEPULSE_DASHBOARD_API_URL` | **Yes** | `https://gamepulse-api.onrender.com` | Full `https://` URL of the API |
 | `SUPABASE_URL` | **Yes** | — | Same as API |
 | `SUPABASE_ANON_KEY` | **Yes** | — | Safe to expose; used for auth UI only |
 
@@ -160,7 +159,7 @@ fly deploy
 The API will be live at `https://gamepulse-api.fly.dev`.
 
 Then deploy the dashboard on Render (Blueprint, one service only) and set
-`GAMEPULSE_DASHBOARD_API_URL=https://gamepulse-api.fly.dev`.
+`GAMEPULSE_DASHBOARD_API_URL=https://gamepulse-api.fly.dev` (or `https://gamepulse-api.onrender.com` if you already have it there).
 
 ---
 

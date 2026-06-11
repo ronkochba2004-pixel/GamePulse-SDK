@@ -2,7 +2,8 @@
 
 This guide walks through every page in the GamePulse dashboard and explains what it shows, how to read it, and when it's useful.
 
-**Default URL:** `http://localhost:8501`
+**Live URL:** https://gamepulse-dashboard.onrender.com  
+**Local development:** `http://localhost:8501`
 
 ---
 

@@ -20,10 +20,7 @@ services:
       - key: GAMEPULSE_API_LOG_LEVEL
         value: INFO
       - key: GAMEPULSE_API_CORS_ORIGINS
-        # After the dashboard deploys and you know its URL, change this to:
-        #   https://gamepulse-dashboard.onrender.com
-        # (or whatever Render assigns). Leave as * for the initial deploy.
-        value: "*"
+        value: "https://gamepulse-dashboard.onrender.com"
 
   # ── GamePulse Dashboard ────────────────────────────────────────────────────
   - type: web
@@ -35,12 +32,8 @@ services:
     dockerContext: .
     healthCheckPath: /_stcore/health
     envVars:
-      # Set this AFTER the API service has deployed and you know its permanent URL.
-      # In the Render dashboard: gamepulse-dashboard → Environment → Add variable:
-      #   GAMEPULSE_DASHBOARD_API_URL = https://gamepulse-api.onrender.com
-      # (replace "gamepulse-api" with whatever name Render assigned)
       - key: GAMEPULSE_DASHBOARD_API_URL
-        sync: false
+        value: "https://gamepulse-api.onrender.com"
       - key: SUPABASE_URL
         sync: false                # same value as the API service
       - key: SUPABASE_ANON_KEY

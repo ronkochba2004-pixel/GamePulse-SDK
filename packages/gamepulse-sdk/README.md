@@ -64,7 +64,7 @@ pip install gamepulse-sdk
 
 ## 3. Getting your API key
 
-1. Open the GamePulse dashboard (default: `http://localhost:8501`)
+1. Open the GamePulse dashboard — **live:** https://gamepulse-dashboard.onrender.com or local dev: `http://localhost:8501`
 2. Sign in or create an account
 3. Go to **Projects → Create project**
 4. Give your project a name and a slug (e.g. `my-platformer`)
@@ -91,7 +91,7 @@ gamepulse.init(
     api_key="gpk_your_key_here",      # from the Projects page
     project="my-platformer",          # your project's slug
     player_id="user_abc123",          # unique ID for this player (see note below)
-    api_url="http://localhost:8000",  # your GamePulse API server URL
+    api_url="https://gamepulse-api.onrender.com",  # deployed; or http://localhost:8000 for local dev
     app_version="1.0.0",              # optional — shown in the Players breakdown
     enable_crash_capture=True,        # optional — auto-report unhandled exceptions
 )
@@ -530,7 +530,7 @@ def init_analytics(app_version: str, country: str, platform: str) -> None:
         api_key=os.getenv("GAMEPULSE_API_KEY"),
         project=os.getenv("GAMEPULSE_PROJECT", "my-platformer"),
         player_id=player_id,
-        api_url=os.getenv("GAMEPULSE_API_URL", "http://localhost:8000"),
+        api_url=os.getenv("GAMEPULSE_API_URL", "https://gamepulse-api.onrender.com"),
         app_version=app_version,
         enable_crash_capture=True,
     )
@@ -612,7 +612,7 @@ if __name__ == "__main__":
 
 ## 14. Understanding your dashboard
 
-Once events are flowing, the dashboard at `http://localhost:8501` (default) gives you these pages:
+Once events are flowing, the dashboard at https://gamepulse-dashboard.onrender.com (or `http://localhost:8501` for local dev) gives you these pages:
 
 ### Overview
 Platform-wide health at a glance. Shows Daily Active Users as an area chart, sessions vs. crashes per day as a bar chart, crash-free rate (target: ≥ 99%), and total sessions and avg session length.
@@ -683,7 +683,7 @@ For custom scenarios (high crash rate, whale-heavy cohort, etc.), use the **Cust
 python -m simulator \
     --players 50 \
     --duration 120 \
-    --api-url http://localhost:8000 \
+    --api-url https://gamepulse-api.onrender.com \
     --api-key gpk_your_key_here \
     --project my-game
 ```

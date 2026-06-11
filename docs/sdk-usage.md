@@ -13,7 +13,7 @@ gamepulse.init(
     api_key="gpk_...",           # from Projects page
     project="my-game",           # project slug
     player_id="user_123",        # stable unique ID — see best practices
-    api_url="http://localhost:8000",
+    api_url="https://gamepulse-api.onrender.com",  # or http://localhost:8000 for local dev
     app_version="1.0.0",         # optional
     enable_crash_capture=True,   # default True
     debug=False,                 # set True to log every event

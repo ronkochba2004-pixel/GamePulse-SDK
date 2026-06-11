@@ -13,6 +13,8 @@ Explore everything through a live dashboard. **You own all the data.**
 ![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?logo=supabase&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
+**[Live Dashboard →](https://gamepulse-dashboard.onrender.com)** · **[Live API →](https://gamepulse-api.onrender.com/docs)**
+
 </div>
 
 ---
