@@ -1,0 +1,14 @@
+-- 0008_public_refresh_rpc.sql
+--
+-- The scheduler was originally designed to call a public-schema wrapper
+-- (public.gp_refresh_analytics_views) so it could use the top-level
+-- sb.rpc() method, which only reaches the public schema.
+--
+-- The correct approach is to call gamepulse.refresh_analytics_views()
+-- directly via sb.schema("gamepulse").rpc("refresh_analytics_views"),
+-- which is consistent with how every other query in the application works
+-- and avoids the need for a public-schema wrapper altogether.
+--
+-- This migration drops the wrapper if it was previously applied.
+-- It is safe to run multiple times (IF EXISTS is idempotent).
+drop function if exists public.gp_refresh_analytics_views();

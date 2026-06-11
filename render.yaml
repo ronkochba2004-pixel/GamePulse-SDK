@@ -1,0 +1,47 @@
+services:
+  # ── GamePulse API ──────────────────────────────────────────────────────────
+  - type: web
+    name: gamepulse-api
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: services/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - key: SUPABASE_URL
+        sync: false                # paste in Render dashboard: https://abc.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false                # paste in Render dashboard (never expose to clients)
+      - key: SUPABASE_JWT_SECRET
+        sync: false                # optional — only needed for static JWT verification
+      - key: GAMEPULSE_ENV
+        value: production
+      - key: GAMEPULSE_API_LOG_LEVEL
+        value: INFO
+      - key: GAMEPULSE_API_CORS_ORIGINS
+        # After the dashboard deploys and you know its URL, change this to:
+        #   https://gamepulse-dashboard.onrender.com
+        # (or whatever Render assigns). Leave as * for the initial deploy.
+        value: "*"
+
+  # ── GamePulse Dashboard ────────────────────────────────────────────────────
+  - type: web
+    name: gamepulse-dashboard
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: apps/dashboard/Dockerfile
+    dockerContext: .
+    healthCheckPath: /_stcore/health
+    envVars:
+      # Set this AFTER the API service has deployed and you know its permanent URL.
+      # In the Render dashboard: gamepulse-dashboard → Environment → Add variable:
+      #   GAMEPULSE_DASHBOARD_API_URL = https://gamepulse-api.onrender.com
+      # (replace "gamepulse-api" with whatever name Render assigned)
+      - key: GAMEPULSE_DASHBOARD_API_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false                # same value as the API service
+      - key: SUPABASE_ANON_KEY
+        sync: false                # anon key (safe to expose) — NOT the service role key

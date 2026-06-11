@@ -1,0 +1,42 @@
+services:
+
+  # ── FastAPI ingestion + query API ─────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    env_file: .env
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/healthz').raise_for_status()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Streamlit dashboard ───────────────────────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: apps/dashboard/Dockerfile
+    env_file: .env
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Demo traffic simulator (run manually or comment in as a one-shot) ─────
+  # Uncomment to auto-run 60 s of demo traffic on `docker compose up`
+  # simulator:
+  #   build:
+  #     context: .
+  #     dockerfile: packages/gamepulse-simulator/Dockerfile
+  #   env_file: .env
+  #   depends_on:
+  #     api:
+  #       condition: service_healthy
+  #   command: python -m simulator --players 25 --duration 60
+  #   restart: "no"
