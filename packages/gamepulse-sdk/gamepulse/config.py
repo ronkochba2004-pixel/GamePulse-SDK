@@ -11,7 +11,7 @@ class SDKConfig:
     api_key: str | None
     project: str | None = None
     player_id: str | None = None
-    api_url: str = "http://localhost:8000"
+    api_url: str = ""
 
     # transport
     timeout_s: float = 10.0

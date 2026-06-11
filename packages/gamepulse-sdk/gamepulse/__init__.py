@@ -8,11 +8,13 @@ from gamepulse.client import GamePulseClient, get_client
 from gamepulse.config import SDKConfig
 from gamepulse.events import economy, gameplay, progression
 from gamepulse.session import Session
+from gamepulse_core.version import __version__
 
 __all__ = [
     "GamePulseClient",
     "SDKConfig",
     "Session",
+    "__version__",
     "economy",
     "flush",
     "gameplay",
@@ -32,12 +34,21 @@ def init(
     api_url: str | None = None,
     **kwargs: Any,
 ) -> GamePulseClient:
-    """Initialize the global SDK client."""
+    """Initialize the global SDK client.
+
+    When *api_key* is ``None`` the SDK runs in no-op mode (safe for tests).
+    When *api_key* is set, *api_url* must also be provided.
+    """
+    if api_key and not api_url:
+        raise ValueError(
+            "api_url is required when api_key is set. "
+            "Pass the URL of your GamePulse API, e.g. api_url='https://your-server.com'."
+        )
     cfg = SDKConfig(
         api_key=api_key,
         project=project,
         player_id=player_id,
-        api_url=api_url or "http://localhost:8000",
+        api_url=api_url or "",
         **kwargs,
     )
     return GamePulseClient.initialize(cfg)
