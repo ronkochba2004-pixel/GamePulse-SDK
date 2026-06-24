@@ -11,15 +11,15 @@ Phase 2 would look like.
 | Item | Detail | Priority |
 |------|--------|----------|
 | No `events` partitioning | `events` is a single big table. Needs monthly partitioning via `pg_partman` before it grows past ~10M rows. | High for prod |
-| Materialized views not auto-refreshed | ✅ **Implemented** — `mv_dau` / `mv_session_stats` are refreshed automatically every 10 min by the FastAPI scheduler (`app/scheduler.py`). Interval is configurable via `GAMEPULSE_ANALYTICS_REFRESH_INTERVAL_S`. | Done |
+| Materialized views not auto-refreshed | **Implemented** — `mv_dau` / `mv_session_stats` are refreshed automatically every 10 min by the FastAPI scheduler (`app/scheduler.py`). Interval is configurable via `GAMEPULSE_ANALYTICS_REFRESH_INTERVAL_S`. | Done |
 | No `player_timeline` index | `events` filtered by `player_id` will do a seq scan without an index. Add `CREATE INDEX ON gamepulse.events (player_id, occurred_at DESC)` | High |
-| No `sessions` player index | `sessions` filtered by `player_id` for retention cohorts. Already has the index — ✅ |
+| No `sessions` player index | `sessions` filtered by `player_id` for retention cohorts. Already has the index. | Done |
 
 ### API
 | Item | Detail | Priority |
 |------|--------|----------|
 | In-memory rate limiter | Per-process, not shared. Fine for a single Uvicorn worker; breaks under horizontal scaling. Switch to Redis sliding-window. | Medium |
-| Request body size limit | ✅ **Implemented** — `ContentSizeLimitMiddleware` enforces `MAX_PAYLOAD_BYTES` (256 KB) and returns HTTP 413. | Done |
+| Request body size limit | **Implemented** — `ContentSizeLimitMiddleware` enforces `MAX_PAYLOAD_BYTES` (256 KB) and returns HTTP 413. | Done |
 | No API versioning strategy | `v1` prefix exists but there's no deprecation or multi-version routing. Add `X-API-Version` header handling. | Low |
 | `resolve_project_from_api_key` hits DB on every request | Cache project lookups in Redis or an LRU with a TTL. Currently O(1 DB round-trip). | Medium at scale |
 | Supabase client is synchronous | The `supabase-py` client is sync. All `await` calls are faked (they just call synchronously). Migrate to `asyncpg` directly for true async. | Phase 2 |
@@ -27,8 +27,8 @@ Phase 2 would look like.
 ### SDK
 | Item | Detail | Priority |
 |------|--------|----------|
-| Offline persistence | ✅ **Implemented (opt-in).** `offline_storage=True` enables a JSONL disk store (`gamepulse/storage.py`): failed uploads are persisted and replayed on next launch, idempotently via the original `event_id`. Bounded by `max_offline_events` / `max_offline_bytes`. **Residual gap:** events still in the in-memory queue at a hard kill (SIGKILL/OOM, no `atexit`) are not journaled — write-through is out of scope for the MVP. | Done (opt-in) |
-| Crash persistence across restarts | ✅ **Implemented (opt-in).** With `offline_storage=True`, a crash whose upload fails at exit is saved and re-sent next launch. **Residual:** no server-side crash idempotency key, so a crash uploaded-but-not-acked before process death can produce one duplicate row on retry. | Done (opt-in) |
+| Offline persistence | **Implemented (opt-in).** `offline_storage=True` enables a JSONL disk store (`gamepulse/storage.py`): failed uploads are persisted and replayed on next launch, idempotently via the original `event_id`. Bounded by `max_offline_events` / `max_offline_bytes`. **Residual gap:** events still in the in-memory queue at a hard kill (SIGKILL/OOM, no `atexit`) are not journaled — write-through is out of scope for the MVP. | Done (opt-in) |
+| Crash persistence across restarts | **Implemented (opt-in).** With `offline_storage=True`, a crash whose upload fails at exit is saved and re-sent next launch. **Residual:** no server-side crash idempotency key, so a crash uploaded-but-not-acked before process death can produce one duplicate row on retry. | Done (opt-in) |
 | Heartbeat not implemented | `Session` sends start/end but no periodic heartbeat to detect background/foreground transitions. | Phase 2 |
 | No platform SDK | Only Python. A game engine SDK (Unity C#, Unreal C++) is the natural next step. | Phase 2 |
 
@@ -60,7 +60,7 @@ Phase 2 would look like.
 - **Supabase Realtime**: Replace the Live Events short-poll with Supabase Realtime subscriptions in the dashboard.
 
 ### P2 SDK
-- **Offline persistence**: ✅ Shipped as an opt-in JSONL disk store (see "Current weak spots → SDK"). Remaining P2 work: write-through journaling so the in-memory queue also survives hard kills, and a server-side crash idempotency key.
+- **Offline persistence**: Shipped as an opt-in JSONL disk store (see "Current weak spots → SDK"). Remaining P2 work: write-through journaling so the in-memory queue also survives hard kills, and a server-side crash idempotency key.
 - **Heartbeat**: Session heartbeat every 60 s for accurate session length on crash.
 - **Unity SDK (C#)**: Mirror of the Python SDK targeting game engines.
 

@@ -13,7 +13,7 @@ Run it with the workspace Python so `import gamepulse` resolves:
 
 Configure it with three environment variables (or a .env file in the repo root):
 
-    GAMEPULSE_API_URL       e.g. http://localhost:8000
+    GAMEPULSE_API_URL       e.g. https://gamepulse-api.onrender.com
     GAMEPULSE_API_KEY       your project's gpk_... key (from the Projects page)
     GAMEPULSE_PROJECT_SLUG  your project slug
 """
@@ -58,17 +58,17 @@ def _load_dotenv() -> None:
 def load_config() -> dict[str, str]:
     _load_dotenv()
     return {
-        "api_url": os.environ.get("GAMEPULSE_API_URL", "http://localhost:8000"),
+        "api_url": os.environ.get("GAMEPULSE_API_URL", "https://gamepulse-api.onrender.com"),
         "api_key": os.environ.get("GAMEPULSE_API_KEY", ""),
         "project": os.environ.get("GAMEPULSE_PROJECT_SLUG", ""),
-        "dashboard_url": os.environ.get("GAMEPULSE_DASHBOARD_URL", "http://localhost:8501"),
+        "dashboard_url": os.environ.get("GAMEPULSE_DASHBOARD_URL", "https://gamepulse-dashboard.onrender.com"),
     }
 
 
 MISSING_CONFIG_MESSAGE = (
     "GamePulse is not configured.\n\n"
     "Set these environment variables (or put them in a .env file in the repo root):\n\n"
-    "    GAMEPULSE_API_URL=http://localhost:8000\n"
+    "    GAMEPULSE_API_URL=https://gamepulse-api.onrender.com\n"
     "    GAMEPULSE_API_KEY=gpk_your_key_here\n"
     "    GAMEPULSE_PROJECT_SLUG=your-project-slug\n\n"
     "Get your API key from the dashboard:\n"

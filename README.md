@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎮 GamePulse
+# GamePulse
 
 ### Self-hosted game analytics for indie and small-team studios
 
@@ -16,6 +16,23 @@ Explore everything through a live dashboard. **You own all the data.**
 **[Live Dashboard →](https://gamepulse-dashboard.onrender.com)** · **[Live API →](https://gamepulse-api.onrender.com/docs)**
 
 </div>
+
+---
+
+## Presentation
+
+| Format | Link |
+|---|---|
+| PowerPoint | [presentation/GamePulse_Presentation.pptx](presentation/GamePulse_Presentation.pptx) |
+| PDF | [presentation/GamePulse_Presentation.pdf](presentation/GamePulse_Presentation.pdf) |
+
+---
+
+## Demo Video
+
+Demonstration of the deployed GamePulse platform, dashboard, simulation system, SDK integration, and analytics workflow.
+
+**[Watch on YouTube →](https://youtu.be/YMAxWwr0pGk)**
 
 ---
 
@@ -37,7 +54,7 @@ Explore everything through a live dashboard. **You own all the data.**
 
 ## Dashboard preview
 
-### 💥 Crash Analytics
+### Crash Analytics
 
 ![Crash Analytics](docs/images/crashes.png)
 
@@ -45,7 +62,7 @@ Explore everything through a live dashboard. **You own all the data.**
 
 ---
 
-### 😤 Rage Quit Analytics
+### Rage Quit Analytics
 
 ![Rage Quit Analytics](docs/images/rage-quits.png)
 
@@ -53,7 +70,7 @@ Explore everything through a live dashboard. **You own all the data.**
 
 ---
 
-### 🎮 Simulation
+### Simulation
 
 ![Simulation](docs/images/simulation.png)
 
@@ -79,11 +96,18 @@ Explore everything through a live dashboard. **You own all the data.**
 
 ## For game developers
 
-Add GamePulse to your game in minutes:
+Add GamePulse to your game in minutes. The SDK is published on PyPI:
 
 ```bash
 pip install gamepulse-sdk
 ```
+
+| Package | PyPI | Purpose |
+|---|---|---|
+| `gamepulse-sdk` | https://pypi.org/project/gamepulse-sdk/ | The public `import gamepulse` client you add to your game |
+| `gamepulse-core` | https://pypi.org/project/gamepulse-core/ | Shared Pydantic models and schemas (installed automatically as a dependency) |
+
+Both packages are MIT-licensed, ship a `py.typed` marker (PEP 561), and target Python 3.11+.
 
 ```python
 import gamepulse
@@ -231,23 +255,30 @@ uv run python examples/demo-game/demo_game.py
 
 ## Architecture
 
-```
- ┌──────────────┐  HTTPS   ┌──────────────────┐  SQL   ┌──────────────┐
- │  Game / SDK  │ ───────► │   FastAPI API     │ ─────► │ Supabase PG  │
- └──────────────┘          │  (ingest + query) │ ◄───── │              │
-                           └────────┬──────────┘        └──────┬───────┘
-                                    │ /v1/query/*               │
-                                    ▼                           │
-                           ┌──────────────────┐                 │
-                           │    Streamlit     │ ◄─── reads ─────┘
-                           │    Dashboard     │
-                           └──────────────────┘
- ┌──────────────┐
- │  Simulator   │ ─── uses SDK ──►
- └──────────────┘
+Data flows in one direction — from the game, through the SDK and API, into the
+database, and back out to the dashboard for analysis:
+
+```mermaid
+flowchart LR
+    Game["Game / Application"]
+    SDK["GamePulse SDK<br/>(batching, retry, offline)"]
+    API["FastAPI Backend<br/>(ingest + query)"]
+    DB[("Supabase<br/>Postgres")]
+    Dash["Streamlit<br/>Dashboard"]
+    Sim["Simulator<br/>(synthetic players)"]
+
+    Game -->|"track / session / crash"| SDK
+    Sim -->|"drives the SDK"| SDK
+    SDK -->|"HTTPS batch<br/>X-GamePulse-Key"| API
+    API -->|"INSERT (idempotent)"| DB
+    DB -->|"SQL aggregation"| API
+    API -->|"/v1/query/* JSON"| Dash
+    Dash -->|"Supabase JWT"| API
 ```
 
-More detail in [`docs/architecture.md`](docs/architecture.md).
+The data flow above and the database schema are documented in full in the
+[Technical Documentation](#technical-documentation). A high-level overview is in
+[`docs/architecture.md`](docs/architecture.md).
 
 ---
 
@@ -293,12 +324,38 @@ uv run pytest -q tests/e2e
 
 ---
 
-## Further reading
+## Technical Documentation
+
+Detailed technical information lives in the [`docs/`](docs/) directory. The README is
+deliberately kept short; the documents below carry the depth — system design,
+database schema, complexity analysis, performance characteristics, and the reasoning
+behind each major technology choice.
+
+### Design and architecture
+
+| Document | What it covers |
+|---|---|
+| [System & Backend Architecture](docs/architecture.md) | Component map, request lifecycle, auth model, backend layering, deployment architecture |
+| [SDK Architecture](docs/sdk-architecture.md) | Queue, transport, retry/backoff, offline persistence, crash capture — with complexity analysis |
+| [Database Design](docs/database-design.md) | Mermaid ER diagram, table-by-table schema, indexing strategy, access patterns |
+| [Analytics Pipeline](docs/analytics-pipeline.md) | End-to-end event flow and how every dashboard metric is computed, with Big-O analysis |
+| [Simulation System Design](docs/simulation-design.md) | Persona model, thread-pool driver, scenario generation, complexity |
+
+### Engineering analysis
+
+| Document | What it covers |
+|---|---|
+| [Performance & Complexity](docs/performance.md) | Time/space complexity tables, scaling behaviour, and the Performance Considerations section |
+| [Non-Functional Requirements](docs/non-functional-requirements.md) | Performance, scalability, reliability, maintainability, security |
+| [Architecture Decision Records](docs/adr.md) | Why FastAPI, Supabase, Streamlit, Render, and PyPI were chosen |
+| [Technical Debt & Roadmap](docs/tech_debt.md) | Known limitations and planned work |
+
+### Usage guides
 
 | Document | What it covers |
 |---|---|
 | [SDK Integration Guide](packages/gamepulse-sdk/README.md) | How to add GamePulse to your game |
+| [SDK Quick Reference](docs/sdk-usage.md) | Condensed API cheat-sheet |
 | [Dashboard Guide](docs/dashboard-guide.md) | What each dashboard page shows and how to use it |
-| [Architecture](docs/architecture.md) | System design, auth model, scaling notes, analytics aggregation |
-| [Deployment](docs/deployment.md) | Render, Fly.io, Railway, production checklist |
-| [Technical debt & roadmap](docs/tech_debt.md) | Known limitations and Phase 2 plans |
+| [Event Taxonomy](docs/event-taxonomy.md) | The canonical list of event types and payloads |
+| [Deployment Guide](docs/deployment.md) | Render, Fly.io, Railway, production checklist |

@@ -1,4 +1,4 @@
-# 🎮 GamePulse Demo Game
+# GamePulse Demo Game
 
 A tiny Tkinter desktop app where **every button calls the real GamePulse SDK**.
 Use it to demonstrate the whole platform live: press buttons here, watch the
@@ -8,19 +8,19 @@ It's not a real game — it's a control panel that fires real telemetry, so you
 can show exactly how a game would integrate the SDK without building a game.
 
 ```
-┌─────────────────────────────────────────┐
-│ 🎮 GamePulse Demo Game                   │
-│ Player: demo_player_a1b2c3               │
-│ Session: 🟢 Active   Level: 3   Gold: 125│
-│                                          │
-│  Session   ▶ Start    ⏹ End             │
-│  Progress  🎯 Start  ✅ Complete  ❌ Fail│
-│  Economy   🪙 Earn   🛒 Spend   💳 IAP   │
-│  Errors    💥 Crash  😤 Rage Quit        │
-│  Custom    🔧 Send Custom Event          │
-│                                          │
-│  Event log…                              │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+| GamePulse Demo Game                     |
+| Player: demo_player_a1b2c3              |
+| Session: Active   Level: 3   Gold: 125  |
+|                                         |
+|  Session   Start      End               |
+|  Progress  Start  Complete  Fail        |
+|  Economy   Earn   Spend   IAP           |
+|  Errors    Crash  Rage Quit             |
+|  Custom    Send Custom Event            |
+|                                         |
+|  Event log...                           |
++-----------------------------------------+
 ```
 
 ---
@@ -149,7 +149,7 @@ A good demo sequence:
 | Any button | **Live Events** (real-time tail) |
 | (any player activity) | **Player Timeline** — paste the player ID shown in the demo |
 
-Click **🌐 Open Dashboard** in the demo to jump straight there. Keep **Live
+Click **Open Dashboard** in the demo to jump straight there. Keep **Live
 Events** open while you click for the most immediate feedback.
 
 ---

@@ -88,14 +88,14 @@ gamepulse.shutdown()  # flush + stop background thread (call at process exit)
 
 | Mechanism | Status | Detail |
 |-----------|--------|--------|
-| In-memory event queue | ✅ Implemented | Bounded queue (default 10,000 events). Events are buffered here before the background flush thread sends them. |
-| Batch uploads | ✅ Implemented | Events are sent in batches (default 50, max 500) via `POST /v1/events/batch`. |
-| Retry on failure | ✅ Implemented | Up to 3 retries on 5xx responses or network errors. |
-| Exponential backoff with jitter | ✅ Implemented | 0.5 s base, doubles each attempt, ±25% jitter. |
-| Graceful shutdown flush | ✅ Implemented | `atexit` handler flushes the queue and ends the active session before the process exits. |
-| Payload size enforcement | ✅ Implemented | Batches > 256 KB are dropped with a warning log before any network call. |
-| Persistent offline storage | ✅ Implemented (opt-in) | Failed uploads are written to a JSONL store on disk and replayed on the next launch. Off by default; enable with `offline_storage=True`. |
-| Crash persistence across restarts | ✅ Implemented (opt-in) | When `offline_storage=True`, a crash whose upload fails is saved to disk and re-sent on the next launch. |
+| In-memory event queue | Implemented | Bounded queue (default 10,000 events). Events are buffered here before the background flush thread sends them. |
+| Batch uploads | Implemented | Events are sent in batches (default 50, max 500) via `POST /v1/events/batch`. |
+| Retry on failure | Implemented | Up to 3 retries on 5xx responses or network errors. |
+| Exponential backoff with jitter | Implemented | 0.5 s base, doubles each attempt, ±25% jitter. |
+| Graceful shutdown flush | Implemented | `atexit` handler flushes the queue and ends the active session before the process exits. |
+| Payload size enforcement | Implemented | Batches > 256 KB are dropped with a warning log before any network call. |
+| Persistent offline storage | Implemented (opt-in) | Failed uploads are written to a JSONL store on disk and replayed on the next launch. Off by default; enable with `offline_storage=True`. |
+| Crash persistence across restarts | Implemented (opt-in) | When `offline_storage=True`, a crash whose upload fails is saved to disk and re-sent on the next launch. |
 
 ### Persistent offline storage
 
